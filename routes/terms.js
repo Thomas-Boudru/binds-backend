@@ -16,7 +16,7 @@ router.post('/chat', async (req, res) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer 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' 
+                'Authorization': `Bearer ${process.env.GPT_KEY}` 
             },
             body: JSON.stringify({
                 prompt: question,
