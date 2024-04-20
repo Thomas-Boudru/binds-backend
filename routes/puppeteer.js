@@ -106,18 +106,24 @@ router.post('/transformText', async (req, res) => {
   
         res.json({ formattedText });
     } catch (error) {
-        console.error('Erreur lors de l\'extraction du texte de la page :', error);
-        res.status(500).json({ error: 'Une erreur est survenue lors de l\'extraction du texte de la page' });
+        console.error('Erreur ', error);
+        res.status(500).json({ error: 'Une erreur est survenue' });
     }
   });
 
 
-  // Remplacer les retours à la ligne par "\n"
+
   router.post('/generateFile', async (req, res) => {
     try {
         const { data } = req.body;
 
-        fs.writeFileSync('data.jsonl', data);
+        console.log("data", data);
+
+        // Convertir les données en format JSONL
+        const jsonlData = JSON.stringify(data);
+
+        // Écrire les données dans le fichier JSONL
+        fs.writeFileSync('data3.jsonl', jsonlData);
 
         res.json({ message: 'JSONL file created successfully' });
     } catch (error) {
