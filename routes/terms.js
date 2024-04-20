@@ -12,15 +12,15 @@ router.post('/chat', async (req, res) => {
         }
 
         // Faire une requête à l'API de ChatGPT
-        const response = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.GPT_KEY}` 
             },
             body: JSON.stringify({
-                prompt: question,
-                max_tokens: 150 
+                model: "gpt-3.5-turbo",
+                messages: [{role: "user", content: `${question}`}],
             })
         });
 
