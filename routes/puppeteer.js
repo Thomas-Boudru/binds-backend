@@ -119,11 +119,8 @@ router.post('/transformText', async (req, res) => {
 
         console.log("data", data);
 
-        // Convertir les données en format JSONL
-        const jsonlData = JSON.stringify(data);
-
-        // Écrire les données dans le fichier JSONL
-        fs.writeFileSync('data3.jsonl', jsonlData);
+        // Écrire les données dans le fichier JSONL sans conversion en chaîne JSON
+        fs.writeFileSync('data3.jsonl', data);
 
         res.json({ message: 'JSONL file created successfully' });
     } catch (error) {
