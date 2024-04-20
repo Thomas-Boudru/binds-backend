@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "aws-sdk": "^2.1603.0",
     "bcrypt": "^5.1.1",
     "cheerio": "^1.0.0-rc.12",
     "cookie-parser": "~1.4.4",

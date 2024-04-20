@@ -6,6 +6,14 @@ const fs = require('fs');
 const uid2 = require("uid2");
 const path = require('path');
 
+const AWS = require('aws-sdk');
+
+AWS.config.update({
+    accessKeyId: 'AKIAU6GDVVSOLYAQURV5',
+    secretAccessKey: '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'
+});
+
+
 router.post('/extract-text', async (req, res) => {
     try {
         const { pageUrl } = req.body;
@@ -114,8 +122,9 @@ router.post('/transformText', async (req, res) => {
   });
 
 
-  router.use('/generatedFiles', express.static(path.join(__dirname, 'generatedFiles')));
   router.post('/generateFile', async (req, res) => {
+    const s3 = new AWS.S3();
+
     try {
         const { data } = req.body;
 
@@ -126,10 +135,26 @@ router.post('/transformText', async (req, res) => {
         // Écrire les données dans le fichier JSONL sans conversion en chaîne JSON
         fs.writeFileSync(filePath, data);
 
-        const fileURL = `https://binds-backend.vercel.app/Backend/generatedFiles/${random}_filetuning.jsonl`;
+        const uploadParams = {
+            Bucket: 'filetuning',
+            Key: `${random}_filetuning.jsonl`,
+            Body: fs.createReadStream(filePath)
+        };
 
-        // Envoyer l'URL du fichier dans la réponse
-        res.json({ message: 'JSONL file created successfully', fileURL });
+        s3.upload(uploadParams, (err, s3Data) => {
+            if (err) {
+                console.error('Erreur lors du téléversement du fichier sur Amazon S3 :', err);
+                res.status(500).json({ error: 'An error occurred while uploading the file to Amazon S3' });
+            } else {
+                console.log('Fichier téléversé avec succès sur Amazon S3 :', s3Data.Location);
+                // Supprimer le fichier local après le téléversement sur S3
+                fs.unlinkSync(filePath);
+
+                // Envoyer l'URL du fichier dans la réponse
+                res.json({ message: 'JSONL file uploaded successfully', fileURL: s3Data.Location });
+            }
+        });
+
     } catch (error) {
         console.error('Error creating JSONL file:', error);
         res.status(500).json({ error: 'An error occurred while creating the JSONL file' });
