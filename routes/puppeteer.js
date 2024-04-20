@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 router.post('/extract-text', async (req, res) => {
     try {
@@ -109,5 +110,20 @@ router.post('/transformText', async (req, res) => {
         res.status(500).json({ error: 'Une erreur est survenue lors de l\'extraction du texte de la page' });
     }
   });
+
+
+  // Remplacer les retours à la ligne par "\n"
+  router.post('/generateFile', async (req, res) => {
+    try {
+        const { data } = req.body;
+
+        fs.writeFileSync('data.jsonl', data);
+
+        res.json({ message: 'JSONL file created successfully' });
+    } catch (error) {
+        console.error('Error creating JSONL file:', error);
+        res.status(500).json({ error: 'An error occurred while creating the JSONL file' });
+    }
+});
 
 module.exports = router;
