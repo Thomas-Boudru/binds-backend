@@ -3,6 +3,8 @@ const router = express.Router();
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio');
 const fs = require('fs');
+const uid2 = require("uid2");
+const path = require('path');
 
 router.post('/extract-text', async (req, res) => {
     try {
@@ -112,17 +114,22 @@ router.post('/transformText', async (req, res) => {
   });
 
 
-
+  router.use('/generatedFiles', express.static(path.join(__dirname, 'generatedFiles')));
   router.post('/generateFile', async (req, res) => {
     try {
         const { data } = req.body;
 
-        console.log("data", data);
+        const random = uid2(10)
+
+        const filePath = path.join(__dirname, `../generatedFiles/${random}_filetuning.jsonl`);
 
         // Écrire les données dans le fichier JSONL sans conversion en chaîne JSON
-        fs.writeFileSync('data3.jsonl', data);
+        fs.writeFileSync(filePath, data);
 
-        res.json({ message: 'JSONL file created successfully' });
+        const fileURL = `https://binds-backend.vercel.app/Backend/generatedFiles/${random}_filetuning.jsonl`;
+
+        // Envoyer l'URL du fichier dans la réponse
+        res.json({ message: 'JSONL file created successfully', fileURL });
     } catch (error) {
         console.error('Error creating JSONL file:', error);
         res.status(500).json({ error: 'An error occurred while creating the JSONL file' });
