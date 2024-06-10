@@ -11,7 +11,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var emailsRouter = require('./routes/emails');
 var termsRouter = require('./routes/terms');
-var puppeteerRouter = require('./routes/puppeteer');
+var activitiesRouter = require('./routes/activities');
 
 var app = express();
 
@@ -28,6 +28,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/emails', emailsRouter);
 app.use('/terms', termsRouter);
-app.use('/puppeteer', puppeteerRouter);
+app.use('/activities', activitiesRouter);
 
 module.exports = app;
