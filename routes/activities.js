@@ -67,7 +67,7 @@ router.post('/summarize', async (req, res) => {
 
         const responseData = await response.json();
 
-        res.json({ result: true, data: responseData.choices[0].message.content });
+        res.json({ result: true, summary: responseData.choices[0].message.content });
     } catch (error) {
         console.error("Erreur lors de la demande à l'API de ChatGPT :", error);
         res.status(500).json({ error: "Une erreur s'est produite lors de la demande à l'API de ChatGPT." });
